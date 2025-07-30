@@ -1,7 +1,7 @@
 import Header from './Header'
 import Content from './Content'
 
-const course = ({ course }) => {
+const Course = ({ course }) => {
     return (
         <div>
             <Header text={course.name} />
@@ -11,4 +11,4 @@ const course = ({ course }) => {
 
 }
 
-export default course
+export default Course
