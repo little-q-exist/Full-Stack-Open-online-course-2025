@@ -85,7 +85,7 @@ const App = () => {
       <h2>Phonebook</h2>
       <Filter handleFilterChange={handleFilterChange} />
       <h2>Add new</h2>
-      <PersonForm addNewPerson={addNewPerson} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} />
+      <PersonForm addNewPerson={addNewPerson} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} newName={newName} newNumber={newNumber} />
       <h2>Numbers</h2>
       <Person personToShow={personToShow} handleDelete={handleDelete} />
     </div>
