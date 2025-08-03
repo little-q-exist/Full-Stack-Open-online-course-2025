@@ -1,0 +1,24 @@
+{
+  "name": "phonebook-backend",
+  "version": "1.0.0",
+  "description": "Course repo/仓库: https://github.com/fullstack-hy2020/fullstack-hy2020.github.io",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/little-q-exist/Full-Stack-Open-online-course-2025.git"
+  },
+  "author": "little-q",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/little-q-exist/Full-Stack-Open-online-course-2025/issues"
+  },
+  "homepage": "https://github.com/little-q-exist/Full-Stack-Open-online-course-2025#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
