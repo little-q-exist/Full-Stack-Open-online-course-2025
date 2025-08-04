@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/little-q-exist/Full-Stack-Open-online-course-2025#readme",
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "morgan": "^1.10.1"
   }
 }
