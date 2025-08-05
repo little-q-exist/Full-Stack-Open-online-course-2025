@@ -20,6 +20,7 @@
   "homepage": "https://github.com/little-q-exist/Full-Stack-Open-online-course-2025#readme",
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "mongoose": "^8.17.0"
   }
 }
