@@ -42,6 +42,12 @@ const App = () => {
 
   const notesToShow = showAll ? notes : notes.filter(note => note.important === true)
 
+  console.log('notestoshow: ');
+
+
+  console.log(notesToShow);
+
+
   const addNote = (event) => {
     event.preventDefault()
     const noteObject = {
