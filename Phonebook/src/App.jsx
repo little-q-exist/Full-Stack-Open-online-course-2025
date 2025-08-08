@@ -20,7 +20,13 @@ const App = () => {
       })
   }, [])
 
+  console.log(persons);
+
+
   const personToShow = persons.filter(person => new RegExp(filter, "i").test(person.name))
+
+  console.log(personToShow);
+
 
   const handleFilterChange = (event) => {
     setFilter(event.target.value)
