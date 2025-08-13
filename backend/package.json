@@ -4,7 +4,7 @@
   "description": "Course repo/仓库: https://github.com/fullstack-hy2020/fullstack-hy2020.github.io",
   "main": "index.js",
   "scripts": {
-    "test": "echo \\\"Error: no test specified\\\" & exit /b 1",
+    "test": "node --test",
     "start": "node index.js",
     "dev": "node --watch index.js"
   },
