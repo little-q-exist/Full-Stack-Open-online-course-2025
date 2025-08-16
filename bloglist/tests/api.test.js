@@ -76,7 +76,7 @@ describe('POST request', () => {
         expect(addedBlog).to.have.property('likes').that.is.a('number').and.equals(0)
     })
 
-    test.only('title and url are required or 400 BAD', async () => {
+    test('title and url are required or 400 BAD', async () => {
         const badBlog = {
             author: "little-q",
             likes: 1
@@ -94,6 +94,43 @@ describe('POST request', () => {
         const blogsAtEnd = await helper.blogsInDB()
 
         assert.strictEqual(blogsAtEnd.length, helper.blogs.length)
+    })
+})
+
+describe('DELETE request', () => {
+    test('a note can be deleted with 204', async () => {
+        const blogsAtStart = await helper.blogsInDB()
+        const blogToDelete = blogsAtStart[0]
+
+        await api
+            .delete(`/api/blogs/${blogToDelete.id}`)
+            .expect(204)
+
+        const blogsAtEnd = await helper.blogsInDB()
+        const titles = blogsAtEnd.map(blog => blog.title)
+
+        assert(!titles.includes(blogToDelete.title))
+
+        assert.strictEqual(blogsAtStart.length - 1, blogsAtEnd.length)
+    })
+})
+
+describe('PUT request', () => {
+    test.only('update a note and add a like', async () => {
+        const blogsAtStart = await helper.blogsInDB()
+        const blogToUpdate = blogsAtStart[0]
+
+        const NewBlog = { ...blogToUpdate, likes: blogToUpdate.likes + 1 }
+        await api
+            .put(`/api/blogs/${blogToUpdate.id}`)
+            .send(NewBlog)
+            .expect(200)
+            .expect('Content-Type', /application\/json/)
+
+        const blogsAtEnd = await helper.blogsInDB()
+        const blogUpdated = blogsAtEnd.find(blog => blog.id === blogToUpdate.id)
+
+        assert.strictEqual(blogToUpdate.likes + 1, blogUpdated.likes)
     })
 })
 
