@@ -21,7 +21,7 @@ beforeEach(async () => {
 describe('when there is initially one user in db', () => {
 
 
-    test('creation succeeds with a fresh username', async () => {
+    test.only('creation succeeds with a fresh username', async () => {
         const usersAtStart = await helper.usersInDB()
 
         const newUser = {
@@ -58,9 +58,6 @@ describe('when there is initially one user in db', () => {
             .expect('Content-Type', /application\/json/)
 
         const usersAtEnd = await helper.usersInDB()
-
-        console.log(result.body);
-
 
         assert.strictEqual(usersAtStart.length, usersAtEnd.length)
 
