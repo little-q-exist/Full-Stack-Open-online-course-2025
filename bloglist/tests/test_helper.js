@@ -1,5 +1,15 @@
 const Blog = require('../models/blogs')
 
+const listWithOneBlog = [
+    {
+        title: 'Go To Statement Considered Harmful -1',
+        author: 'Edsger W. Dijkstra',
+        url: 'https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf',
+        likes: 15
+    }
+]
+
+
 const blogs = [
     {
         _id: "5a422a851b54a676234d17f7",
@@ -57,4 +67,4 @@ const blogsInDB = async () => {
     return blogs.map(blog => blog.toJSON())
 }
 
-module.exports = { blogs, blogsInDB }
+module.exports = { listWithOneBlog, blogs, blogsInDB }

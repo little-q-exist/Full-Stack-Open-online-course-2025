@@ -19,7 +19,7 @@ beforeEach(async () => {
 
 describe('Get request', () => {
     test('can fetch all blogs', async () => {
-        const blogs = await Blog.find({})
+        const blogs = await helper.blogsInDB()
 
         const response = await api.get('/api/blogs')
             .expect(200)
@@ -31,9 +31,28 @@ describe('Get request', () => {
 
 test('the unique identifier property is named id', async () => {
     const response = await api.get('/api/blogs')
-    console.log(response.body[0]);
-
     expect('id' in response.body[0]).to.be.true
+})
+
+describe('POST request', () => {
+    test('a new blog can be post', async () => {
+
+        const blogsAtStart = await helper.blogsInDB()
+
+        const aNewBlog = helper.listWithOneBlog[0]
+        await api
+            .post('/api/blogs')
+            .send(aNewBlog)
+            .expect(201)
+            .expect('Content-Type', /application\/json/)
+
+        const blogsAtEnd = await helper.blogsInDB()
+
+        assert.strictEqual(blogsAtStart.length + 1, blogsAtEnd.length)
+
+        const titles = blogsAtEnd.map(blog => blog.title)
+        assert(titles.includes(aNewBlog.title))
+    })
 })
 
 after(async () => {
