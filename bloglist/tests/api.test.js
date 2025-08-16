@@ -17,7 +17,7 @@ beforeEach(async () => {
     await Promise.all(promiseArray)
 })
 
-describe('Get request', () => {
+describe('GET request', () => {
     test('can fetch all blogs', async () => {
         const blogs = await helper.blogsInDB()
 
@@ -27,12 +27,14 @@ describe('Get request', () => {
 
         assert.strictEqual(blogs.length, response.body.length)
     })
+
+    test('the unique identifier property is named id', async () => {
+        const response = await api.get('/api/blogs')
+        expect('id' in response.body[0]).to.be.true
+    })
 })
 
-test('the unique identifier property is named id', async () => {
-    const response = await api.get('/api/blogs')
-    expect('id' in response.body[0]).to.be.true
-})
+
 
 describe('POST request', () => {
     test('a new blog can be post', async () => {
@@ -52,6 +54,46 @@ describe('POST request', () => {
 
         const titles = blogsAtEnd.map(blog => blog.title)
         assert(titles.includes(aNewBlog.title))
+    })
+
+    test('like property default zero if missing', async () => {
+        const aNewBlog = helper.listWithOneBlog[0]
+
+        expect('likes' in aNewBlog).to.be.false
+
+        const returnedBlog = await api
+            .post('/api/blogs')
+            .send(aNewBlog)
+            .expect(201)
+            .expect('Content-Type', /application\/json/)
+
+        const blogsAtEnd = await helper.blogsInDB()
+
+        const addedBlog = await blogsAtEnd.find(blog => returnedBlog.body.id === blog.id)
+
+        expect('likes' in addedBlog).to.be.true
+
+        expect(addedBlog).to.have.property('likes').that.is.a('number').and.equals(0)
+    })
+
+    test.only('title and url are required or 400 BAD', async () => {
+        const badBlog = {
+            author: "little-q",
+            likes: 1
+        }
+
+        expect(badBlog).to.not.has.property('title')
+        expect(badBlog).to.not.has.property('url')
+
+        await api
+            .post('/api/blogs')
+            .send(badBlog)
+            .expect(400)
+
+
+        const blogsAtEnd = await helper.blogsInDB()
+
+        assert.strictEqual(blogsAtEnd.length, helper.blogs.length)
     })
 })
 

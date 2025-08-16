@@ -4,6 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "node --test tests/api.test.js",
+    "test:only": "node --test --test-only tests/api.test.js",
     "dev": "node --watch index.js",
     "start": "node index.js"
   },

@@ -4,8 +4,7 @@ const listWithOneBlog = [
     {
         title: 'Go To Statement Considered Harmful -1',
         author: 'Edsger W. Dijkstra',
-        url: 'https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf',
-        likes: 15
+        url: 'https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf'
     }
 ]
 
