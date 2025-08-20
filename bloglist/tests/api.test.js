@@ -1,6 +1,6 @@
 const supertest = require('supertest')
 const app = require('../app')
-const Blog = require('../models/blogs')
+const Blog = require('../models/blog')
 const assert = require('node:assert')
 const { test, describe, after, beforeEach, it } = require('node:test')
 const mongoose = require('mongoose')
