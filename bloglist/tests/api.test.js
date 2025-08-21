@@ -1,4 +1,4 @@
-const { test, describe, beforeEach, before } = require('node:test')
+const { test, describe, beforeEach, before, after } = require('node:test')
 const User = require('../models/user')
 const Blog = require('../models/blog')
 const supertest = require('supertest')
@@ -6,6 +6,7 @@ const app = require('../app')
 const helper = require('./test_helper')
 const assert = require('node:assert')
 const { expect } = require('chai')
+const { default: mongoose } = require('mongoose')
 
 const api = supertest(app)
 
@@ -34,7 +35,7 @@ describe('create a user, login and use token to add a blog', () => {
         assert(usernames.includes(userToAdd.username))
     })
 
-    const token = null
+    let token = null
 
     test('can login and generate a token', async () => {
         const userToAdd = helper.oneUser
@@ -55,7 +56,7 @@ describe('create a user, login and use token to add a blog', () => {
     test('can add a blog with token', async () => {
         const blogToAdd = helper.listWithOneBlog[0]
 
-        const response = api
+        const response = await api
             .post('/api/blogs')
             .set('Authorization', `Bearer ${token}`)
             .send(blogToAdd)
@@ -70,4 +71,8 @@ describe('create a user, login and use token to add a blog', () => {
 
         assert(titles.includes(blogToAdd.title))
     })
+})
+
+after(async () => {
+    await mongoose.connection.close()
 })
