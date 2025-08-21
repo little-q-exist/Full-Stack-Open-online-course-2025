@@ -4,6 +4,7 @@ const config = require('./utils/config')
 const blogRouter = require('./controllers/blogs')
 const logger = require('./utils/logger')
 const userRouter = require('./controllers/users')
+const loginRouter = require('./controllers/login')
 
 const app = express()
 
@@ -22,5 +23,6 @@ app.use(express.json())
 
 app.use('/api/blogs', blogRouter)
 app.use('/api/users', userRouter)
+app.use('/api/login', loginRouter)
 
 module.exports = app
