@@ -71,6 +71,26 @@ describe('create a user, login and use token to add a blog', () => {
 
         assert(titles.includes(blogToAdd.title))
     })
+
+    test('cannot post a blog without a token', async () => {
+        const { _id, __v, ...blogToAdd } = helper.blogs[1]
+
+        const blogsAtStart = await helper.blogsInDB()
+
+        const response = await api
+            .post('/api/blogs')
+            .send(blogToAdd)
+            .expect(401)
+            .expect('Content-Type', /application\/json/)
+
+        const blogsAtEnd = await helper.blogsInDB()
+
+        assert.strictEqual(blogsAtStart.length, blogsAtEnd.length)
+
+        const titles = blogsAtEnd.map(blog => blog.title)
+
+        assert(!titles.includes(blogToAdd.title))
+    })
 })
 
 after(async () => {
