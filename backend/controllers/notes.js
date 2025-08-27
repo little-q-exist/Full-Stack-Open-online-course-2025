@@ -19,7 +19,7 @@ notesRouter.get('/:id', async (request, response, next) => {
 
 const getTokenFrom = request => {
     const authorization = request.get('authorization')
-    if (authorization && authorization.startWith('Bearer ')) {
+    if (authorization && authorization.startsWith('Bearer ')) {
         return authorization.replace('Bearer ', '')
     }
     return null
@@ -33,7 +33,7 @@ notesRouter.post('/', async (request, response, next) => {
         return response.status(401).send({ error: 'invalid token' })
     }
 
-    const user = await User.findById(decodedToken.userId)
+    const user = await User.findById(decodedToken.id)
 
     if (!user) {
         return response.status(400).json({ error: 'userId missing or not valid' })
