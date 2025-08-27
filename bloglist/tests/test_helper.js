@@ -63,7 +63,7 @@ const blogs = [
 
 const oneUser = {
     "username": "wq",
-    "password": "3483rjdn",
+    "password": "test",
     "name": "xiaq"
 }
 
