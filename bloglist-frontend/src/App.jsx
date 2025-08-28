@@ -63,6 +63,11 @@ const App = () => {
       const newBlog = await blogService.create({ title, author, url })
       setBlogs(blogs.concat(newBlog))
 
+      setMessage(`the blog "${newBlog.title}" was created.`)
+      setTimeout(() => {
+        setMessage('')
+      }, 5000);
+
       setTitle('')
       setAuthor('')
       setUrl('')
