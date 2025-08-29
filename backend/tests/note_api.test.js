@@ -9,6 +9,7 @@ const note = require('../models/note')
 
 const api = supertest(app)
 
+// tests for POST cannot pass because of token auth
 
 beforeEach(async () => {
     await Note.deleteMany({})
