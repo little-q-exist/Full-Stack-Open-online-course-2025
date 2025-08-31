@@ -42,4 +42,12 @@ const errorHandler = (error, request, response, next) => {
     next(error)
 }
 
-module.exports = { unknownEndpoint, tokenExtractor, errorHandler }
+const requestLogger = (request, response, next) => {
+    logger.info(request.method)
+    logger.info(request.path)
+    logger.info(request.body)
+    logger.info('----')
+    next()
+}
+
+module.exports = { unknownEndpoint, tokenExtractor, errorHandler, requestLogger }
