@@ -29,7 +29,7 @@ const Blog = ({ blog, addLike, deleteBlog }) => {
 
   const blogDetails = () => {
     return (
-      <div>
+      <div className='details'>
         <div>{blog.url}</div>
         <div>
           {blog.likes}
@@ -45,7 +45,7 @@ const Blog = ({ blog, addLike, deleteBlog }) => {
 
   return (
     <div style={blogStyle}>
-      <div>
+      <div className='basic-info'>
         {blog.title} {blog.author}
         <button onClick={toggleDetails}>{showDetails ? 'hide' : 'view'}</button>
       </div>

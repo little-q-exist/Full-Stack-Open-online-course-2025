@@ -4,7 +4,7 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
-import NoteForm from './components/NoteForm'
+import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 
 const App = () => {
@@ -122,7 +122,7 @@ const App = () => {
       <button onClick={handleLogout}>logout</button>
 
       <Togglable buttonLabel={'Create a new blog'} ref={noteFormRef}>
-        <NoteForm addBlog={addBlog} />
+        <BlogForm addBlog={addBlog} />
       </Togglable>
 
       {blogToShow}

@@ -1,4 +1,4 @@
-import { useInsertionEffect, useState } from 'react'
+import { useImperativeHandle, useState } from 'react'
 
 const Togglable = (props) => {
     const [visible, setVisible] = useState(false)
@@ -10,7 +10,7 @@ const Togglable = (props) => {
         setVisible(!visible)
     }
 
-    useInsertionEffect(props.ref, () => {
+    useImperativeHandle(props.ref, () => {
         return { toggleVisibilty }
     })
 
