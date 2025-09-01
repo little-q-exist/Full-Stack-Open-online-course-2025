@@ -79,6 +79,23 @@ const App = () => {
     }
   }
 
+  const addLike = async (blogObject) => {
+    const likedBlog = await blogService.like(blogObject, blogObject.id)
+    setBlogs(blogs.map(blog => blog.id === likedBlog.id ? likedBlog : blog))
+  }
+
+  const deleteBlog = async (blogObject) => {
+    const confirmDelete = window.confirm(`Are you sure to delete "${blogObject.title}"?`)
+    if (confirmDelete) {
+      await blogService.deleteBlog(blogObject)
+      setBlogs(blogs.filter(blog => blog.id !== blogObject.id))
+    }
+  }
+
+  const compareLikes = (a, b) => {
+    return b.likes - a.likes
+  }
+
   if (user === null) {
     return (
       <div>
@@ -92,8 +109,9 @@ const App = () => {
     )
   }
 
+  blogs.sort(compareLikes)
   const blogToShow = blogs.map(blog =>
-    <Blog key={blog.id} blog={blog} />
+    <Blog key={blog.id} blog={blog} addLike={addLike} deleteBlog={deleteBlog} />
   )
 
   return (

@@ -1,7 +1,19 @@
 import { useState } from 'react'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, addLike, deleteBlog }) => {
   const [showDetails, setShowDetails] = useState(false)
+
+  const handleLikeChange = (event) => {
+    event.preventDefault()
+
+    addLike(blog)
+  }
+
+  const handleDelete = (event) => {
+    event.preventDefault()
+
+    deleteBlog(blog)
+  }
 
   const blogStyle = {
     paddingTop: 10,
@@ -19,8 +31,14 @@ const Blog = ({ blog }) => {
     return (
       <div>
         <div>{blog.url}</div>
-        <div>{blog.likes}</div>
+        <div>
+          {blog.likes}
+          <button onClick={handleLikeChange}>like</button>
+        </div>
         <div>{blog.user.name}</div>
+        <div>
+          <button onClick={handleDelete}>delete</button>
+        </div>
       </div>
     )
   }
@@ -29,7 +47,7 @@ const Blog = ({ blog }) => {
     <div style={blogStyle}>
       <div>
         {blog.title} {blog.author}
-        <button onClick={toggleDetails}>view</button>
+        <button onClick={toggleDetails}>{showDetails ? 'hide' : 'view'}</button>
       </div>
       {showDetails && blogDetails()}
     </div>
