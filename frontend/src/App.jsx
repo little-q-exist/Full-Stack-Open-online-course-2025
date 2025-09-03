@@ -141,7 +141,7 @@ const App = () => {
         </div>
       )}
 
-      <h2>Notes</h2>
+      <h2>AllNotes</h2>
 
       <div>
         <button onClick={() => setShowAll(!showAll)}>
