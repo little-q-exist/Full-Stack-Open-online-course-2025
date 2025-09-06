@@ -14,4 +14,28 @@ const noteReducer = (state = [], action) => {
     }
 }
 
+const generateId = () => {
+    return Number((Math.random() * 1000000).toFixed(0))
+}
+
+export const createNote = (content) => {
+    return {
+        type: 'NEW_NOTE',
+        payload: {
+            content,
+            important: true,
+            id: generateId()
+        }
+    }
+}
+
+export const toggleImportanceOf = (id) => {
+    return {
+        type: 'TOGGLE_IMPORTANCE',
+        payload: {
+            id
+        }
+    }
+}
+
 export default noteReducer
