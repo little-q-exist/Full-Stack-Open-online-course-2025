@@ -13,6 +13,7 @@ const store = configureStore({
     }
 })
 
+
 store.subscribe(() => console.log(store.getState()))
 
 ReactDOM.createRoot(document.getElementById('root')).render(
