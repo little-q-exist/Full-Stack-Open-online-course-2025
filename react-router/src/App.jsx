@@ -1,8 +1,6 @@
-import ReactDOM from 'react-dom/client'
 import { useState } from 'react'
 
 import {
-    BrowserRouter as Router,
     Routes,
     Route,
     Link,
@@ -79,6 +77,7 @@ const Login = (props) => {
 }
 
 const App = () => {
+    // eslint-disable-next-line no-unused-vars
     const [notes, setNotes] = useState([
         {
             id: 1,
@@ -115,6 +114,8 @@ const App = () => {
         notes.find(note => note.id === Number(match.params.id)) :
         null
 
+
+
     return (
         <div>
             <div>
@@ -128,7 +129,7 @@ const App = () => {
             </div>
 
             <Routes>
-                <Route path="/notes/:id" element={<Note notes={note} />} />
+                <Route path="/notes/:id" element={<Note note={note} />} />
                 <Route path="/notes" element={<Notes notes={notes} />} />
                 <Route path="/users" element={user ? <Users /> : <Navigate replace to="/login" />} />
                 <Route path="/login" element={<Login onLogin={login} />} />
