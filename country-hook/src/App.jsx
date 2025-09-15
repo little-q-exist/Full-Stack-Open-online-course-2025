@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import countryService from './services/country'
 
 const useField = (type) => {
   const [value, setValue] = useState('')
@@ -16,11 +16,23 @@ const useField = (type) => {
 }
 
 const useCountry = (name) => {
-  const [country, setCountry] = useState(null)
+  const [data, setData] = useState(null)
+  const [found, setFound] = useState(false)
 
-  useEffect(() => {})
+  useEffect(() => {
+    countryService
+      .getOne(name)
+      .then(res => {
+        setData(res)
+        setFound(true)
+      })
+      .catch(() => setFound(false))
+  }, [name])
 
-  return country
+  return {
+    data,
+    found
+  }
 }
 
 const Country = ({ country }) => {
@@ -38,10 +50,11 @@ const Country = ({ country }) => {
 
   return (
     <div>
-      <h3>{country.data.name} </h3>
+      <h2>{country.data.name.common} </h2>
+      <h4>{country.data.name.official}</h4>
       <div>capital {country.data.capital} </div>
-      <div>population {country.data.population}</div> 
-      <img src={country.data.flag} height='100' alt={`flag of ${country.data.name}`}/>  
+      <div>population {country.data.population}</div>
+      <img src={country.data.flags.png} height='100' alt={`flag of ${country.data.name}`} />
     </div>
   )
 }
@@ -60,7 +73,7 @@ const App = () => {
     <div>
       <form onSubmit={fetch}>
         <input {...nameInput} />
-        <button>find</button>
+        <button type='submit'>find</button>
       </form>
 
       <Country country={country} />
