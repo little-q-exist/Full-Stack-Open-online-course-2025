@@ -1,5 +1,8 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react-refresh/only-export-components */
 import ReactDOM from 'react-dom/client'
 import { useState } from 'react'
+import { Alert, AppBar, Button, Container, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Toolbar } from '@mui/material'
 
 import {
   BrowserRouter as Router,
@@ -34,13 +37,26 @@ const Note = ({ note }) => {
 const Notes = ({ notes }) => (
   <div>
     <h2>Notes</h2>
-    <ul>
-      {notes.map(note =>
-        <li key={note.id}>
-          <Link to={`/notes/${note.id}`}>{note.content}</Link>
-        </li>
-      )}
-    </ul>
+
+    <TableContainer component={Paper}>
+      <Table>
+        <TableBody>
+          {notes.map(note => (
+            <TableRow key={note.id}>
+              <TableCell>
+                <Link to={`/notes/${note.id}`}>{note.content}</Link>
+              </TableCell>
+              <TableCell>
+                {note.user}
+              </TableCell>
+              <TableCell>
+                {note.important ? 'important' : ''}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   </div>
 )
 
@@ -69,12 +85,12 @@ const Login = (props) => {
       <h2>login</h2>
       <form onSubmit={onSubmit}>
         <div>
-          username: <input />
+          <TextField label='username' />
         </div>
         <div>
-          password: <input type='password' />
+          <TextField label='password' type='password' />
         </div>
-        <button type="submit">login</button>
+        <Button variant='contained' color='primary' type='submit'>login</Button>
       </form>
     </div>
   )
@@ -103,6 +119,7 @@ const App = () => {
   ])
 
   const [user, setUser] = useState(null)
+  const [message, setMessage] = useState(null)
 
   const match = useMatch('/notes/:id')
 
@@ -113,6 +130,7 @@ const App = () => {
 
   const login = (user) => {
     setUser(user)
+    setMessage(`Welcome ${user}`)
   }
 
   const padding = {
@@ -120,28 +138,48 @@ const App = () => {
   }
 
   return (
-    <div>
+    <Container>
       <div>
-        <Link style={padding} to="/">home</Link>
-        <Link style={padding} to="/notes">notes</Link>
-        <Link style={padding} to="/users">users</Link>
-        {user
-          ? <em>{user} logged in</em>
-          : <Link style={padding} to="/login">login</Link>
-        }
+        <div>
+          {(message &&
+            <Alert severity='success' onClose={() => { setMessage(null) }}>
+              {message}
+            </Alert>
+          )}
+        </div>
+
+        <AppBar position='static'>
+          <Toolbar>
+            <IconButton edge='start' color='inherit' aria-label='menu'></IconButton>
+            <Button color='inherit' component={Link} to='/'>
+              HOME
+            </Button>
+            <Button color='inherit' component={Link} to='/notes'>
+              NOTES
+            </Button>
+            <Button color='inherit' component={Link} to='/users'>
+              USERS
+            </Button>
+            {user ?
+              <em>user {user} logged in.</em> :
+              <Button color='inherit' component={Link}>LOGIN</Button>
+            }
+          </Toolbar>
+        </AppBar>
+
+        <Routes>
+          <Route path="/notes/:id" element={<Note note={note} />} />
+          <Route path="/notes" element={<Notes notes={notes} />} />
+          <Route path="/users" element={user ? <Users /> : <Navigate replace to="/login" />} />
+          <Route path="/login" element={<Login onLogin={login} />} />
+          <Route path="/" element={<Home />} />
+        </Routes>
+        <div>
+          <br />
+          <em>Note app, Department of Computer Science 2022</em>
+        </div>
       </div>
-      <Routes>
-        <Route path="/notes/:id" element={<Note note={note} />} />
-        <Route path="/notes" element={<Notes notes={notes} />} />
-        <Route path="/users" element={user ? <Users /> : <Navigate replace to="/login" />} />
-        <Route path="/login" element={<Login onLogin={login} />} />
-        <Route path="/" element={<Home />} />
-      </Routes>
-      <div>
-        <br />
-        <em>Note app, Department of Computer Science 2022</em>
-      </div>
-    </div>
+    </Container>
   )
 }
 
