@@ -6,27 +6,30 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer'
+import { setBlogs, addBlogs, updateBlogs, deleteBlogs } from './reducers/blogReducer'
+import { setUser } from './reducers/userReducer'
+import useInputField from './hooks/useInputField'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
-  const [user, setUser] = useState(null)
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const dispatch = useDispatch()
+  const blogs = useSelector(state => state.blogs)
+  const user = useSelector(state => state.user)
+  const username = useInputField('text')
+  const password = useInputField('password')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs(blogs)
+      dispatch(setBlogs(blogs))
     )
-  }, [])
+  }, [dispatch])
 
   useEffect(() => {
     const userJSON = window.localStorage.getItem('blogappUser')
     if (userJSON) {
       const user = JSON.parse(userJSON)
-      setUser(user)
+      dispatch(setUser(user))
       blogService.setToken(user.token)
     }
   }, [])
@@ -37,14 +40,14 @@ const App = () => {
     event.preventDefault()
 
     try {
-      const user = await loginService.login({ username, password })
+      const user = await loginService.login({ username: username.value, password: password.value })
 
       window.localStorage.setItem('blogappUser', JSON.stringify(user))
       blogService.setToken(user.token)
-      setUser(user)
+      dispatch(setUser(user))
 
-      setUsername('')
-      setPassword('')
+      username.reset()
+      password.reset()
     } catch {
       dispatch(setNotification('Wrong username or password', 5000))
     }
@@ -54,13 +57,13 @@ const App = () => {
     event.preventDefault()
 
     window.localStorage.removeItem('blogappUser')
-    setUser(null)
+    dispatch(setUser(null))
   }
 
   const addBlog = async (blogObject) => {
     try {
       const newBlog = await blogService.create(blogObject)
-      setBlogs(blogs.concat(newBlog))
+      dispatch(addBlogs(newBlog))
 
       noteFormRef.current.toggleVisibility()
 
@@ -73,14 +76,14 @@ const App = () => {
 
   const addLike = async (blogObject) => {
     const likedBlog = await blogService.like(blogObject, blogObject.id)
-    setBlogs(blogs.map(blog => blog.id === likedBlog.id ? likedBlog : blog))
+    dispatch(updateBlogs(likedBlog))
   }
 
   const deleteBlog = async (blogObject) => {
     const confirmDelete = window.confirm(`Are you sure to delete "${blogObject.title}"?`)
     if (confirmDelete) {
       await blogService.deleteBlog(blogObject)
-      setBlogs(blogs.filter(blog => blog.id !== blogObject.id))
+      dispatch(deleteBlogs(blogObject))
     }
   }
 
@@ -88,21 +91,23 @@ const App = () => {
     return b.likes - a.likes
   }
 
+  const removeProperity = (obj, keyToRemove) => {
+    // eslint-disable-next-line no-unused-vars
+    const { [keyToRemove]: _, ...rest } = obj
+    return rest
+  }
+
   if (user === null) {
     return (
       <div>
         <h2>Login</h2>
         <Notification />
-        <LoginForm handleLogin={handleLogin} handleUsernameChange={({ target }) => { setUsername(target.value) }}
-          handlePasswordChange={({ target }) => { setPassword(target.value) }}
-          username={username}
-          password={password} />
+        <LoginForm handleLogin={handleLogin} username={removeProperity(username, 'reset')} password={removeProperity(password, 'reset')} />
       </div>
     )
   }
 
-  blogs.sort(compareLikes)
-  const blogToShow = blogs.map(blog =>
+  const blogToShow = blogs.toSorted(compareLikes).map(blog =>
     <Blog key={blog.id} blog={blog} addLike={addLike} deleteBlog={deleteBlog} />
   )
 

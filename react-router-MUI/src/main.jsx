@@ -162,7 +162,7 @@ const App = () => {
             </Button>
             {user ?
               <em>user {user} logged in.</em> :
-              <Button color='inherit' component={Link}>LOGIN</Button>
+              <Button color='inherit' component={Link} to='/login'>LOGIN</Button>
             }
           </Toolbar>
         </AppBar>
