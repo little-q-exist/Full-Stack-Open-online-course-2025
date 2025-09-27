@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useContext } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -6,13 +6,14 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
+import NotificationContext from './NotificationContext'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [message, setMessage] = useState(null)
+  const [message, messageDispatch] = useContext(NotificationContext)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -44,9 +45,9 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch {
-      setMessage('Wrong username or password')
+      messageDispatch({ type: 'SET_MESSAGE', payload: 'WRONG username or password' })
       setTimeout(() => {
-        setMessage(null)
+        messageDispatch({ type: 'CLEAR' })
       }, 5000);
     }
   }
@@ -65,16 +66,16 @@ const App = () => {
 
       noteFormRef.current.toggleVisibility()
 
-      setMessage(`the blog "${newBlog.title}" was created.`)
+      messageDispatch({ type: 'SET_MESSAGE', payload: `the blog "${newBlog.title}" was created.` })
       setTimeout(() => {
-        setMessage('')
+        messageDispatch({ type: 'CLEAR' })
       }, 5000);
 
 
     } catch (error) {
-      setMessage(`error occured: ${error.response.data.error}`)
+      messageDispatch({ type: 'SET_MESSAGE', payload: `error occured: ${error.response.data.error}` })
       setTimeout(() => {
-        setMessage(null)
+        messageDispatch({ type: 'CLEAR' })
       }, 5000);
     }
   }
