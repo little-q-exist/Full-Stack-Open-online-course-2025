@@ -3,9 +3,8 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
-import Togglable from './components/Togglable'
-import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
+import Blogs from './components/Blogs'
 import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer'
 import { setBlogs, addBlogs, updateBlogs, deleteBlogs } from './reducers/blogReducer'
@@ -120,16 +119,10 @@ const App = () => {
       <button onClick={handleLogout}>logout</button>
 
       <Routes>
-        <Route>
-          
-        </Route>
+        <Route path='/' element={<Blogs noteFormRef={noteFormRef} addBlog={addBlog} blogToShow={blogToShow} />}/>
       </Routes>
 
-      <Togglable buttonLabel={'Create a new blog'} ref={noteFormRef}>
-        <BlogForm addBlog={addBlog} />
-      </Togglable>
-
-      {blogToShow}
+      
     </div>
   )
 }
