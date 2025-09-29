@@ -7,28 +7,67 @@ import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 import NotificationContext from './NotificationContext'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import UserContext from './UserContext'
+
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
-  const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [message, messageDispatch] = useContext(NotificationContext)
+  const [user, userDispatch] = useContext(UserContext)
 
-  useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
-    )
-  }, [])
+  const queryClient = useQueryClient()
+
+  const result = useQuery({
+    queryKey: ['blogs'],
+    queryFn: blogService.getAll
+  })
+
+  const newBlogMutation = useMutation({
+    mutationFn: blogService.create,
+    onSuccess: (newBlog) => {
+      const blogs = queryClient.getQueryData(['blogs'])
+      queryClient.setQueryData(['blogs'], blogs.concat(newBlog))
+      noteFormRef.current.toggleVisibility()
+
+      messageDispatch({ type: 'SET_MESSAGE', payload: `the blog "${newBlog.title}" was created.` })
+      setTimeout(() => {
+        messageDispatch({ type: 'CLEAR' })
+      }, 5000);
+    },
+    onError: (error) => {
+      messageDispatch({ type: 'SET_MESSAGE', payload: `error occured: ${error.response.data.error}` })
+      setTimeout(() => {
+        messageDispatch({ type: 'CLEAR' })
+      }, 5000);
+    }
+  })
+
+  const updateBlogMutation = useMutation({
+    mutationFn: blogService.like,
+    onSuccess: (likedBlog) => {
+      const blogs = queryClient.getQueryData(['blogs'])
+      queryClient.setQueryData(['blogs'], blogs.map(blog => blog.id === likedBlog.id ? likedBlog : blog))
+    }
+  })
+
+  const deleteBlogMutation = useMutation({
+    mutationFn: blogService.deleteBlog,
+    onSuccess: (deletedBlog) => {
+      const blogs = queryClient.getQueryData(['blogs'])
+      queryClient.setQueryData(['blogs'], blogs.filter(blog => blog.id !== deletedBlog.id))
+    }
+  })
 
   useEffect(() => {
     const userJSON = window.localStorage.getItem('blogappUser')
     if (userJSON) {
       const user = JSON.parse(userJSON)
-      setUser(user)
+      userDispatch({ type: 'SET_USER', payload: user })
       blogService.setToken(user.token)
     }
-  }, [])
+  }, [userDispatch])
 
   const noteFormRef = useRef()
 
@@ -40,7 +79,7 @@ const App = () => {
 
       window.localStorage.setItem('blogappUser', JSON.stringify(user))
       blogService.setToken(user.token)
-      setUser(user)
+      userDispatch({ type: 'SET_USER', payload: user })
 
       setUsername('')
       setPassword('')
@@ -56,44 +95,25 @@ const App = () => {
     event.preventDefault()
 
     window.localStorage.removeItem('blogappUser')
-    setUser(null)
+    userDispatch({ type: 'SET_USER', payload: null })
   }
 
-  const addBlog = async (blogObject) => {
-    try {
-      const newBlog = await blogService.create(blogObject)
-      setBlogs(blogs.concat(newBlog))
-
-      noteFormRef.current.toggleVisibility()
-
-      messageDispatch({ type: 'SET_MESSAGE', payload: `the blog "${newBlog.title}" was created.` })
-      setTimeout(() => {
-        messageDispatch({ type: 'CLEAR' })
-      }, 5000);
-
-
-    } catch (error) {
-      messageDispatch({ type: 'SET_MESSAGE', payload: `error occured: ${error.response.data.error}` })
-      setTimeout(() => {
-        messageDispatch({ type: 'CLEAR' })
-      }, 5000);
-    }
+  const addBlog = (blogObject) => {
+    newBlogMutation.mutate(blogObject)
   }
 
   const addLike = async (blogObject) => {
-    const likedBlog = await blogService.like(blogObject, blogObject.id)
-    setBlogs(blogs.map(blog => blog.id === likedBlog.id ? likedBlog : blog))
+    updateBlogMutation.mutate(blogObject)
   }
 
   const deleteBlog = async (blogObject) => {
     const confirmDelete = window.confirm(`Are you sure to delete "${blogObject.title}"?`)
     if (confirmDelete) {
-      await blogService.deleteBlog(blogObject)
-      setBlogs(blogs.filter(blog => blog.id !== blogObject.id))
+      deleteBlogMutation.mutate(blogObject)
     }
   }
 
-  const compareLikes = (a, b) => {
+  const compareLikesDesc = (a, b) => {
     return b.likes - a.likes
   }
 
@@ -110,8 +130,15 @@ const App = () => {
     )
   }
 
-  blogs.sort(compareLikes)
-  const blogToShow = blogs.map(blog =>
+  if (result.isLoading) {
+    return (
+      <h3>Blog is loading...</h3>
+    )
+  }
+
+  const blogs = result.data
+
+  const blogToShow = blogs.toSorted(compareLikesDesc).map(blog =>
     <Blog key={blog.id} blog={blog} addLike={addLike} deleteBlog={deleteBlog} />
   )
 

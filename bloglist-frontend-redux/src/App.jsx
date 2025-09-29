@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -11,6 +11,7 @@ import { setNotification } from './reducers/notificationReducer'
 import { setBlogs, addBlogs, updateBlogs, deleteBlogs } from './reducers/blogReducer'
 import { setUser } from './reducers/userReducer'
 import useInputField from './hooks/useInputField'
+import { Route, Routes } from 'react-router'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -32,7 +33,7 @@ const App = () => {
       dispatch(setUser(user))
       blogService.setToken(user.token)
     }
-  }, [])
+  }, [dispatch])
 
   const noteFormRef = useRef()
 
@@ -117,6 +118,12 @@ const App = () => {
       <Notification />
       <p>{user.name} has logged in.</p>
       <button onClick={handleLogout}>logout</button>
+
+      <Routes>
+        <Route>
+          
+        </Route>
+      </Routes>
 
       <Togglable buttonLabel={'Create a new blog'} ref={noteFormRef}>
         <BlogForm addBlog={addBlog} />

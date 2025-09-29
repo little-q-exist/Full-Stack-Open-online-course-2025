@@ -1,4 +1,4 @@
-import { useContext, useReducer, createContext } from 'react'
+import { useReducer, createContext } from 'react'
 
 const notificationReducer = (state, action) => {
     switch (action.type) {
@@ -20,16 +20,6 @@ export const NotificationContextProvider = (props) => {
             {props.children}
         </NotificationContext.Provider>
     )
-}
-
-export const useNotificationValue = () => {
-    const valueAndDispatch = useContext(NotificationContext)
-    return valueAndDispatch[0]
-}
-
-export const useNotificationDispatch = () => {
-    const valueAndDispatch = useContext(NotificationContext)
-    return valueAndDispatch[1]
 }
 
 export default NotificationContext
