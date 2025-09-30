@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import userService from './services/users'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 import Blogs from './components/Blogs'
@@ -10,13 +11,16 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer'
 import { setBlogs, addBlogs, updateBlogs, deleteBlogs } from './reducers/blogReducer'
 import { setUser } from './reducers/userReducer'
+import { setUsers } from './reducers/usersReducer'
 import useInputField from './hooks/useInputField'
-import { Link, Route, Routes } from 'react-router'
+import { Link, Route, Routes, useMatch } from 'react-router'
+import User from './components/User'
 
 const App = () => {
   const dispatch = useDispatch()
   const blogs = useSelector(state => state.blogs)
-  const user = useSelector(state => state.user)
+  const currentUser = useSelector(state => state.user)
+  const users = useSelector(state => state.users)
   const username = useInputField('text')
   const password = useInputField('password')
 
@@ -27,6 +31,13 @@ const App = () => {
   }, [dispatch])
 
   useEffect(() => {
+    userService.getAll().then(users =>
+      dispatch(setUsers(users))
+    )
+  }, [dispatch])
+
+
+  useEffect(() => {
     const userJSON = window.localStorage.getItem('blogappUser')
     if (userJSON) {
       const user = JSON.parse(userJSON)
@@ -34,6 +45,12 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [dispatch])
+
+  const match = useMatch('/user/:id')
+
+  const selectedUser = match ?
+    users.find(user => user.id === match.params.id) :
+    null
 
   const noteFormRef = useRef()
 
@@ -98,7 +115,7 @@ const App = () => {
     return rest
   }
 
-  if (user === null) {
+  if (currentUser === null) {
     return (
       <div>
         <h2>Login</h2>
@@ -122,13 +139,13 @@ const App = () => {
       </div>
 
       <Notification />
-      <p>{user.name} has logged in.</p>
+      <p>{currentUser.name} has logged in.</p>
       <button onClick={handleLogout}>logout</button>
 
       <Routes>
         <Route path='/' element={<Blogs noteFormRef={noteFormRef} addBlog={addBlog} blogToShow={blogToShow} />} />
         <Route path='/users' element={<Users />} />
-        
+        <Route path='/user/:id' element={<User user={selectedUser} />} />
       </Routes>
 
 
