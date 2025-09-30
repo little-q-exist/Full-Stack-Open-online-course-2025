@@ -5,12 +5,13 @@ import loginService from './services/login'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 import Blogs from './components/Blogs'
+import Users from './components/Users'
 import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer'
 import { setBlogs, addBlogs, updateBlogs, deleteBlogs } from './reducers/blogReducer'
 import { setUser } from './reducers/userReducer'
 import useInputField from './hooks/useInputField'
-import { Route, Routes } from 'react-router'
+import { Link, Route, Routes } from 'react-router'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -114,15 +115,23 @@ const App = () => {
   return (
     <div>
       <h2>Blogs</h2>
+
+      <div>
+        <Link to={'/'}>HOME</Link>
+        <Link to={'/users'}>USERS</Link>
+      </div>
+
       <Notification />
       <p>{user.name} has logged in.</p>
       <button onClick={handleLogout}>logout</button>
 
       <Routes>
-        <Route path='/' element={<Blogs noteFormRef={noteFormRef} addBlog={addBlog} blogToShow={blogToShow} />}/>
+        <Route path='/' element={<Blogs noteFormRef={noteFormRef} addBlog={addBlog} blogToShow={blogToShow} />} />
+        <Route path='/users' element={<Users />} />
+        
       </Routes>
 
-      
+
     </div>
   )
 }
