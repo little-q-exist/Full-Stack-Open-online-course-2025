@@ -1,6 +1,10 @@
+import { useNavigate } from 'react-router'
+
 const BlogView = ({ blog, addLike, deleteBlog }) => {
+    const navigate = useNavigate()
+
     if (!blog) {
-        return null
+        return <h4>Loading...</h4>
     }
 
     const handleAddLike = (event) => {
@@ -11,6 +15,7 @@ const BlogView = ({ blog, addLike, deleteBlog }) => {
     const handleDeleteBlog = (event) => {
         event.preventDefault()
         deleteBlog(blog)
+        navigate('/')
     }
 
     return (
