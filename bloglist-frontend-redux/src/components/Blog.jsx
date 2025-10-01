@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router'
 
 const Blog = ({ blog, addLike, deleteBlog }) => {
   const [showDetails, setShowDetails] = useState(false)
@@ -46,7 +47,7 @@ const Blog = ({ blog, addLike, deleteBlog }) => {
   return (
     <div style={blogStyle}>
       <div className='basic-info'>
-        {blog.title} {blog.author}
+        <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
         <button onClick={toggleDetails}>{showDetails ? 'hide' : 'view'}</button>
       </div>
       {showDetails && blogDetails()}

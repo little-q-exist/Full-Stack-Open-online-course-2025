@@ -15,6 +15,7 @@ import { setUsers } from './reducers/usersReducer'
 import useInputField from './hooks/useInputField'
 import { Link, Route, Routes, useMatch } from 'react-router'
 import User from './components/User'
+import BlogView from './components/BlogView'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -34,7 +35,7 @@ const App = () => {
     userService.getAll().then(users =>
       dispatch(setUsers(users))
     )
-  }, [dispatch])
+  }, [dispatch, blogs])
 
 
   useEffect(() => {
@@ -46,10 +47,15 @@ const App = () => {
     }
   }, [dispatch])
 
-  const match = useMatch('/user/:id')
+  const userMatch = useMatch('/user/:id')
+  const blogMatch = useMatch('/blogs/:id')
 
-  const selectedUser = match ?
-    users.find(user => user.id === match.params.id) :
+  const selectedUser = userMatch ?
+    users.find(user => user.id === userMatch.params.id) :
+    null
+
+  const selectedBlog = blogMatch ?
+    blogs.find(blog => blog.id === blogMatch.params.id) :
     null
 
   const noteFormRef = useRef()
@@ -146,6 +152,7 @@ const App = () => {
         <Route path='/' element={<Blogs noteFormRef={noteFormRef} addBlog={addBlog} blogToShow={blogToShow} />} />
         <Route path='/users' element={<Users />} />
         <Route path='/user/:id' element={<User user={selectedUser} />} />
+        <Route path='/blogs/:id' element={<BlogView blog={selectedBlog} />} />
       </Routes>
 
 
