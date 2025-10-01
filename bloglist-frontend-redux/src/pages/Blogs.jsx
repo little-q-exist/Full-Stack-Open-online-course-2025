@@ -1,5 +1,5 @@
-import Togglable from './Togglable'
-import BlogForm from './BlogForm'
+import Togglable from '../components/Togglable'
+import BlogForm from '../components/BlogForm'
 
 const Blogs = ({ noteFormRef, addBlog, blogToShow }) => {
     return (
