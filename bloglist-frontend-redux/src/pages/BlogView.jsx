@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router'
+import Comments from '../components/Comments'
 
 const BlogView = ({ blog, addLike, deleteBlog }) => {
     const navigate = useNavigate()
@@ -29,6 +30,8 @@ const BlogView = ({ blog, addLike, deleteBlog }) => {
             </div>
             <div>added by {blog.user.name}</div>
             <button onClick={handleDeleteBlog}>delete</button>
+            
+            <Comments comments={blog.comment} />
         </div>
     )
 }

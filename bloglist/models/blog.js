@@ -18,6 +18,10 @@ const blogSchema = mongoose.Schema({
         type: Number,
         default: 0
     },
+    comment: {
+        type: Array,
+        default: []
+    }
 })
 
 blogSchema.pre('save', (next) => {

@@ -1,6 +1,6 @@
 const User = ({ user }) => {
     if (!user) {
-        return null
+        return <h4>Loading...</h4>
     }
 
     return (
