@@ -152,7 +152,7 @@ const App = () => {
         <Route path='/' element={<Blogs noteFormRef={noteFormRef} addBlog={addBlog} blogToShow={blogToShow} />} />
         <Route path='/users' element={<Users />} />
         <Route path='/users/:id' element={<User user={selectedUser} />} />
-        <Route path='/blogs/:id' element={<BlogView blog={selectedBlog} />} />
+        <Route path='/blogs/:id' element={<BlogView blog={selectedBlog} addLike={addLike} deleteBlog={deleteBlog} />} />
       </Routes>
 
 
