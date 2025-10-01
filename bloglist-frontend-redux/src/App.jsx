@@ -47,7 +47,7 @@ const App = () => {
     }
   }, [dispatch])
 
-  const userMatch = useMatch('/user/:id')
+  const userMatch = useMatch('/users/:id')
   const blogMatch = useMatch('/blogs/:id')
 
   const selectedUser = userMatch ?
@@ -151,7 +151,7 @@ const App = () => {
       <Routes>
         <Route path='/' element={<Blogs noteFormRef={noteFormRef} addBlog={addBlog} blogToShow={blogToShow} />} />
         <Route path='/users' element={<Users />} />
-        <Route path='/user/:id' element={<User user={selectedUser} />} />
+        <Route path='/users/:id' element={<User user={selectedUser} />} />
         <Route path='/blogs/:id' element={<BlogView blog={selectedBlog} />} />
       </Routes>
 
