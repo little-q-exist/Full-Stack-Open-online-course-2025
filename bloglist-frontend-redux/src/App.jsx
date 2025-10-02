@@ -107,7 +107,7 @@ const App = () => {
     const confirmDelete = window.confirm(`Are you sure to delete "${blogObject.title}"?`)
     if (confirmDelete) {
       await blogService.deleteBlog(blogObject)
-        .then(blogObject => dispatch(deleteBlogs(blogObject)))
+        .then(() => dispatch(deleteBlogs(blogObject)))
         .catch(error => {
           if (error.response?.status === 401) {
             dispatch(setNotification('Cannot delete blog of others', 5000))
