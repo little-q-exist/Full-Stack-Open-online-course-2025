@@ -35,7 +35,7 @@ const App = () => {
     userService.getAll().then(users =>
       dispatch(setUsers(users))
     )
-  }, [dispatch, blogs])
+  }, [blogs, dispatch])
 
 
   useEffect(() => {
