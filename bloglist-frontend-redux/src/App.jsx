@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react'
-import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import userService from './services/users'
@@ -13,9 +12,12 @@ import { setBlogs, addBlogs, updateBlogs, deleteBlogs } from './reducers/blogRed
 import { setUser } from './reducers/userReducer'
 import { setUsers } from './reducers/usersReducer'
 import useInputField from './hooks/useInputField'
-import { Link, Route, Routes, useMatch } from 'react-router'
+import { Route, Routes, useMatch } from 'react-router'
 import User from './pages/User'
 import BlogView from './pages/BlogView'
+import Menu from './components/Menu'
+import { Layout } from 'antd'
+import { Content, Footer, Header } from 'antd/es/layout/layout'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -136,32 +138,33 @@ const App = () => {
     )
   }
 
-  const blogToShow = blogs.toSorted(compareLikes).map(blog =>
-    <Blog key={blog.id} blog={blog} addLike={addLike} deleteBlog={deleteBlog} />
-  )
+  const blogToShow = blogs.toSorted(compareLikes)
 
   return (
-    <div>
-      <h2>Blogs</h2>
+    <Layout style={{ display: 'flex', flexDirection: 'column' }}>
+      <Header style={{ display: 'flex', alignItems: 'center' }}>
+        <div style={{ color: '#ffffff', fontSize: '36px' }}>
+          Blog List
+        </div>
+        <Menu handleLogout={handleLogout} />
+      </Header>
 
-      <div>
-        <Link to={'/'}>HOME</Link>
-        <Link to={'/users'}>USERS</Link>
-      </div>
+      <Content style={{ flex: 1 }}>
+        <Notification />
 
-      <Notification />
-      <p>{currentUser.name} has logged in.</p>
-      <button onClick={handleLogout}>logout</button>
+        <Routes>
+          <Route path='/' element={<Blogs noteFormRef={noteFormRef} addBlog={addBlog} blogToShow={blogToShow} />} />
+          <Route path='/users' element={<Users />} />
+          <Route path='/users/:id' element={<User user={selectedUser} />} />
+          <Route path='/blogs/:id' element={<BlogView blog={selectedBlog} addLike={addLike} deleteBlog={deleteBlog} />} />
+        </Routes>
+      </Content>
 
-      <Routes>
-        <Route path='/' element={<Blogs noteFormRef={noteFormRef} addBlog={addBlog} blogToShow={blogToShow} />} />
-        <Route path='/users' element={<Users />} />
-        <Route path='/users/:id' element={<User user={selectedUser} />} />
-        <Route path='/blogs/:id' element={<BlogView blog={selectedBlog} addLike={addLike} deleteBlog={deleteBlog} />} />
-      </Routes>
+      <Footer>
+        Blog List application Created by LittleQ
+      </Footer>
 
-
-    </div>
+    </Layout>
   )
 }
 
