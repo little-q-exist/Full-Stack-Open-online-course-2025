@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { Button } from 'antd'
 
 const BlogForm = ({ addBlog }) => {
     const [title, setTitle] = useState('')
@@ -38,7 +39,7 @@ const BlogForm = ({ addBlog }) => {
                         <input type="text" value={url} onChange={({ target }) => { setUrl(target.value) }} />
                     </label>
                 </div>
-                <button type='submit'>post blog</button>
+                <Button htmlType='submit' color="blue" variant="solid">post blog</Button>
             </form>
         </div>
     )

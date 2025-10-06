@@ -16,7 +16,8 @@ import { Route, Routes, useMatch } from 'react-router'
 import User from './pages/User'
 import BlogView from './pages/BlogView'
 import Menu from './components/Menu'
-import { Layout } from 'antd'
+
+import { Layout, Typography } from 'antd'
 import { Content, Footer, Header } from 'antd/es/layout/layout'
 
 const App = () => {
@@ -79,9 +80,7 @@ const App = () => {
     }
   }
 
-  const handleLogout = async (event) => {
-    event.preventDefault()
-
+  const handleLogout = () => {
     window.localStorage.removeItem('blogappUser')
     dispatch(setUser(null))
   }
@@ -149,16 +148,18 @@ const App = () => {
         <Menu handleLogout={handleLogout} />
       </Header>
 
-      <Content style={{ flex: 1 }}>
-        <Notification />
+      <Typography>
+        <Content style={{ flex: 1 }}>
+          <Notification />
 
-        <Routes>
-          <Route path='/' element={<Blogs noteFormRef={noteFormRef} addBlog={addBlog} blogToShow={blogToShow} />} />
-          <Route path='/users' element={<Users />} />
-          <Route path='/users/:id' element={<User user={selectedUser} />} />
-          <Route path='/blogs/:id' element={<BlogView blog={selectedBlog} addLike={addLike} deleteBlog={deleteBlog} />} />
-        </Routes>
-      </Content>
+          <Routes>
+            <Route path='/' element={<Blogs noteFormRef={noteFormRef} addBlog={addBlog} blogToShow={blogToShow} />} />
+            <Route path='/users' element={<Users />} />
+            <Route path='/users/:id' element={<User user={selectedUser} />} />
+            <Route path='/blogs/:id' element={<BlogView blog={selectedBlog} addLike={addLike} deleteBlog={deleteBlog} />} />
+          </Routes>
+        </Content>
+      </Typography>
 
       <Footer>
         Blog List application Created by LittleQ
