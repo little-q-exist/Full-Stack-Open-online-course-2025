@@ -4,6 +4,8 @@ import Comments from '../components/Comments'
 import { useDispatch } from 'react-redux'
 import { updateBlogs } from '../reducers/blogReducer'
 
+import { Button, Popconfirm } from 'antd'
+
 const BlogView = ({ blog, addLike, deleteBlog }) => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
@@ -41,7 +43,15 @@ const BlogView = ({ blog, addLike, deleteBlog }) => {
                 <button onClick={handleAddLike}>like</button>
             </div>
             <div>added by {blog.user.name}</div>
-            <button onClick={handleDeleteBlog}>delete</button>
+            <Popconfirm
+                title='Delete this blog'
+                description='Are you sure to delete this blog?'
+                okText='Yes'
+                cancelText='No'
+                onConfirm={handleDeleteBlog}
+            >
+                <Button danger type='text'>delete</Button>
+            </Popconfirm>
 
             <Comments comments={blog.comment} addComment={addComment} />
         </div>

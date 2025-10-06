@@ -76,7 +76,7 @@ const App = () => {
       username.reset()
       password.reset()
     } catch {
-      dispatch(setNotification('Wrong username or password', 5000))
+      dispatch(setNotification({ message: 'Wrong username or password', type: 'error' }, 5000))
     }
   }
 
@@ -92,10 +92,10 @@ const App = () => {
 
       noteFormRef.current.toggleVisibility()
 
-      dispatch(setNotification(`the blog "${newBlog.title}" was created.`, 5000))
+      dispatch(setNotification({ message: `the blog "${newBlog.title}" was created.`, type: 'success' }, 5000))
     }
     catch (error) {
-      dispatch(setNotification(`error occured: ${error.response.data.error}`, 5000))
+      dispatch(setNotification({ message: `error occured: ${error.response.data.error}`, type: 'error' }, 5000))
     }
   }
 
@@ -105,16 +105,13 @@ const App = () => {
   }
 
   const deleteBlog = async (blogObject) => {
-    const confirmDelete = window.confirm(`Are you sure to delete "${blogObject.title}"?`)
-    if (confirmDelete) {
-      await blogService.deleteBlog(blogObject)
-        .then(() => dispatch(deleteBlogs(blogObject)))
-        .catch(error => {
-          if (error.response?.status === 401) {
-            dispatch(setNotification('Cannot delete blog of others', 5000))
-          }
-        })
-    }
+    await blogService.deleteBlog(blogObject)
+      .then(() => dispatch(deleteBlogs(blogObject)))
+      .catch(error => {
+        if (error.response?.status === 401) {
+          dispatch(setNotification({ message: 'Cannot delete blog of others', type: 'error' }, 5000))
+        }
+      })
   }
 
   const compareLikes = (a, b) => {
