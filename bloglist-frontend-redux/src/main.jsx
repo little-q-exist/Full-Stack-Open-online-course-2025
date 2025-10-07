@@ -3,6 +3,7 @@ import App from './App'
 import store from './store'
 import { Provider } from 'react-redux'
 import { BrowserRouter as Router } from 'react-router'
+import '@ant-design/v5-patch-for-react-19';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <Provider store={store}>

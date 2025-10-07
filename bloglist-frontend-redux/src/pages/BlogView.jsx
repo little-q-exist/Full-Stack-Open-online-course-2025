@@ -1,13 +1,11 @@
-import { useNavigate } from 'react-router'
 import blogService from '../services/blogs'
 import Comments from '../components/Comments'
 import { useDispatch } from 'react-redux'
 import { updateBlogs } from '../reducers/blogReducer'
 
-import { Button, Popconfirm } from 'antd'
+import { Button, Popconfirm, Tooltip } from 'antd'
 
 const BlogView = ({ blog, addLike, deleteBlog }) => {
-    const navigate = useNavigate()
     const dispatch = useDispatch()
 
     if (!blog) {
@@ -22,7 +20,6 @@ const BlogView = ({ blog, addLike, deleteBlog }) => {
     const handleDeleteBlog = (event) => {
         event.preventDefault()
         deleteBlog(blog)
-        navigate('/')
     }
 
     const addComment = async (comment) => {
@@ -40,7 +37,9 @@ const BlogView = ({ blog, addLike, deleteBlog }) => {
             <a href="#">{blog.url}</a>
             <div>
                 {blog.likes} likes
-                <button onClick={handleAddLike}>like</button>
+                <Tooltip title='Like'>
+                    <Button onClick={handleAddLike} shape='circle' type='primary'>L</Button>
+                </Tooltip>
             </div>
             <div>added by {blog.user.name}</div>
             <Popconfirm

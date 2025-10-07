@@ -12,7 +12,7 @@ import { setBlogs, addBlogs, updateBlogs, deleteBlogs } from './reducers/blogRed
 import { setUser } from './reducers/userReducer'
 import { setUsers } from './reducers/usersReducer'
 import useInputField from './hooks/useInputField'
-import { Route, Routes, useMatch } from 'react-router'
+import { Route, Routes, useMatch, useNavigate } from 'react-router'
 import User from './pages/User'
 import BlogView from './pages/BlogView'
 import Menu from './components/Menu'
@@ -22,6 +22,7 @@ import { Content, Footer, Header } from 'antd/es/layout/layout'
 
 const App = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const blogs = useSelector(state => state.blogs)
   const currentUser = useSelector(state => state.user)
   const users = useSelector(state => state.users)
@@ -106,7 +107,11 @@ const App = () => {
 
   const deleteBlog = async (blogObject) => {
     await blogService.deleteBlog(blogObject)
-      .then(() => dispatch(deleteBlogs(blogObject)))
+      .then(() => {
+        dispatch(deleteBlogs(blogObject))
+        navigate('/')
+      }
+      )
       .catch(error => {
         if (error.response?.status === 401) {
           dispatch(setNotification({ message: 'Cannot delete blog of others', type: 'error' }, 5000))

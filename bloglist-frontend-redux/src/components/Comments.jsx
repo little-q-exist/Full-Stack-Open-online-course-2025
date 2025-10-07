@@ -1,26 +1,45 @@
 import useInputField from '../hooks/useInputField'
+import { Form, Button, Input, Space, List, Avatar } from 'antd'
+import { UserOutlined } from '@ant-design/icons'
 
 const Comments = ({ comments, addComment }) => {
     const { reset, ...comment } = useInputField('text')
 
-    const handleCommentSubmit = event => {
-        event.preventDefault()
+    const handleCommentSubmit = () => {
         addComment(comment.value)
         reset()
     }
 
     return (
         <div>
-            <h3>comments</h3>
-            <form onSubmit={handleCommentSubmit}>
-                <input {...comment} />
-                <button type='submit'>submit</button>
-            </form>
-            <ul>
-                {comments.map((comment, index) =>
-                    <li key={`${comment}-${index}-${Math.random() * 10}`}>{comment}</li>
-                )}
-            </ul>
+            <Form
+                onFinish={handleCommentSubmit}
+                name='comment'
+                labelCol={{ span: 8 }}
+                wrapperCol={{ span: 16 }}
+                layout='vertical'
+            >
+                <Form.Item label='Comment' name='comment'>
+                    <Space.Compact>
+                        <Input {...comment} />
+                        <Button htmlType='submit' type='primary'>submit</Button>
+                    </Space.Compact>
+                </Form.Item>
+            </Form>
+            <List
+                size='large'
+                itemLayout='vertical'
+                dataSource={comments}
+                renderItem={item =>
+                    <List.Item>
+                        <List.Item.Meta
+                            avatar={<Avatar icon={<UserOutlined />} />}
+                            title='Anonymous User'
+                            description={item}
+                        />
+                    </List.Item>
+                }
+            />
         </div>
     )
 }
