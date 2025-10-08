@@ -142,7 +142,7 @@ const App = () => {
   const blogToShow = blogs.toSorted(compareLikes)
 
   return (
-    <Layout style={{ display: 'flex', flexDirection: 'column' }}>
+    <Layout style={{ display: 'flex' }}>
       <Header style={{ display: 'flex', alignItems: 'center' }}>
         <div style={{ color: '#ffffff', fontSize: '36px' }}>
           Blog List
@@ -151,7 +151,7 @@ const App = () => {
       </Header>
 
       <Typography>
-        <Content style={{ flex: 1 }}>
+        <Content style={{padding: '24px 48px'}}>
           <Notification />
 
           <Routes>

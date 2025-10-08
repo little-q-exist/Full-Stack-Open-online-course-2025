@@ -1,5 +1,5 @@
 import useInputField from '../hooks/useInputField'
-import { Form, Button, Input, Space, List, Avatar } from 'antd'
+import { Form, Button, Input, Space, List, Avatar, Divider } from 'antd'
 import { UserOutlined } from '@ant-design/icons'
 
 const Comments = ({ comments, addComment }) => {
@@ -15,13 +15,21 @@ const Comments = ({ comments, addComment }) => {
             <Form
                 onFinish={handleCommentSubmit}
                 name='comment'
-                labelCol={{ span: 8 }}
-                wrapperCol={{ span: 16 }}
+                labelCol={{ span: 1 }}
                 layout='vertical'
+                requiredMark={false}
             >
-                <Form.Item label='Comment' name='comment'>
+                <Divider orientation='left'>Comment</Divider>
+                <Form.Item
+                    label={null}
+                    name='comment'
+                    rules={[{ required: true, message: 'Please input your comment' }]}
+                >
+
                     <Space.Compact>
-                        <Input {...comment} />
+                        <Input {...comment}
+                            variant='filled'
+                        />
                         <Button htmlType='submit' type='primary'>submit</Button>
                     </Space.Compact>
                 </Form.Item>

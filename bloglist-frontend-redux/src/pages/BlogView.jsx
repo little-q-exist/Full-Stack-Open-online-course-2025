@@ -2,8 +2,9 @@ import blogService from '../services/blogs'
 import Comments from '../components/Comments'
 import { useDispatch } from 'react-redux'
 import { updateBlogs } from '../reducers/blogReducer'
+import { LikeOutlined } from '@ant-design/icons'
 
-import { Button, Popconfirm, Tooltip } from 'antd'
+import { Button, Descriptions, Popconfirm, Statistic } from 'antd'
 
 const BlogView = ({ blog, addLike, deleteBlog }) => {
     const dispatch = useDispatch()
@@ -27,30 +28,47 @@ const BlogView = ({ blog, addLike, deleteBlog }) => {
         dispatch(updateBlogs(newBlog))
     }
 
-    console.log(blog.id);
-
+    const items = [
+        {
+            key: 'author',
+            label: 'Author',
+            children: blog.author
+        },
+        {
+            key: 'url',
+            label: 'Url',
+            children: <a href="#">{blog.url}</a>
+        },
+        {
+            key: 'likes',
+            label: 'Likes',
+            children: <Statistic value={blog.likes} prefix={<Button onClick={handleAddLike} color='blue' variant='text' icon={<LikeOutlined style={{ fontSize: 'x-large' }} />} size='large' />} />
+        },
+        {
+            key: 'creator',
+            label: 'Creator',
+            children: blog.user.name
+        }
+    ]
 
     return (
         <div>
-            <h2>{blog.title}</h2>
-            <h3>{blog.author}</h3>
-            <a href="#">{blog.url}</a>
-            <div>
-                {blog.likes} likes
-                <Tooltip title='Like'>
-                    <Button onClick={handleAddLike} shape='circle' type='primary'>L</Button>
-                </Tooltip>
-            </div>
-            <div>added by {blog.user.name}</div>
-            <Popconfirm
-                title='Delete this blog'
-                description='Are you sure to delete this blog?'
-                okText='Yes'
-                cancelText='No'
-                onConfirm={handleDeleteBlog}
-            >
-                <Button danger type='text'>delete</Button>
-            </Popconfirm>
+            <Descriptions title={blog.title}
+                items={items}
+                bordered
+                layout='vertical'
+                extra={
+                    <Popconfirm
+                        title='Delete this blog'
+                        description='Are you sure to delete this blog?'
+                        okText='Yes'
+                        cancelText='No'
+                        onConfirm={handleDeleteBlog}
+                    >
+                        <Button danger type='primary'>delete</Button>
+                    </Popconfirm>
+                }
+            />
 
             <Comments comments={blog.comment} addComment={addComment} />
         </div>
