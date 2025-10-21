@@ -116,8 +116,21 @@ const typeDefs = `
   type Query {
     bookCount: Int!
     authorCount: Int!
-    allBooks(author:String!): [Book!]!
+    allBooks(author:String, genre: [String!]): [Book!]!
     allAuthors: [Author!]!
+  }
+
+  type Mutation {
+    addBook(
+        title: String!
+        author: String!
+        published: Int!
+        genres: [String!]!
+    ): Book
+    editAuthor(
+        name: String!
+        setBornTo: Int!
+    ): Author
   }
 `
 
@@ -132,14 +145,44 @@ const resolvers = {
         bookCount: () => books.length,
         authorCount: () => authors.length,
         allBooks: (root, args) => {
-            if (!args.author) {
-                return authors
-            }
             const byAuthor = (book) => book.author === args.author
-            return books.filter(byAuthor)
+
+            // byGenre: 如果参数数组中的一个字符串匹配某本书数组中的某个字符串，就选出来
+            const byGenre = (book) => args.genre.some(genre => book.genres.includes(genre))
+            if (args.author) {
+                books = books.filter(byAuthor)
+            }
+            if (args.genre) {
+                books = books.filter(byGenre)
+            }
+            return books
         },
         allAuthors: () => authors
-    }
+    },
+
+    Mutation: {
+        addBook: (root, args) => {
+            const authorExists = authors.find(a => a.name === args.author)
+            if (!authorExists) {
+                const newAuthor = {
+                    name: args.author,
+                }
+                authors = authors.concat(newAuthor)
+            }
+            const newBook = { ...args }
+            books = books.concat(newBook)
+            return newBook
+        },
+        editAuthor: (root, args) => {
+            const author = authors.find(a => a.name === args.name)
+            if (!author) {
+                return null
+            }
+            const updatedAuthor = { ...author, born: args.setBornTo }
+            authors = authors.map(a => a.name === args.name ? updatedAuthor : a)
+            return updatedAuthor
+        }
+    },
 }
 
 const server = new ApolloServer({
