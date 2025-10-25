@@ -1,10 +1,11 @@
+/* eslint-disable react/prop-types */
 import { useState } from 'react'
 import Select from 'react-select'
 import { useQuery, useMutation } from '@apollo/client'
 import { ALL_AUTHORS, EDIT_AUTHOR } from '../queries'
 
-const BirthYear = () => {
-  const [name, setName] = useState('')
+const BirthYear = ({ authors }) => {
+  const [nameOption, setNameOption] = useState(null)
   const [born, setBorn] = useState('')
 
   const [updateAuthor] = useMutation(EDIT_AUTHOR)
@@ -12,31 +13,35 @@ const BirthYear = () => {
   const handleSubmit = (event) => {
     event.preventDefault()
 
-    if (!name || !born) {
+    if (!nameOption || !born) {
       return
     }
 
     updateAuthor({
-      variables: { name, setBornTo: Number(born) },
+      variables: { name: nameOption.value, setBornTo: Number(born) },
       refetchQueries: [{ query: ALL_AUTHORS }]
     })
 
-    setName('')
+    setNameOption('')
     setBorn('')
   }
 
+  const authorsOptions = authors.map((a) => { return { value: a.name, label: a.name } })
 
   return (
     <div>
       <h3>Set BirthYear</h3>
-      {/* TODO: Add form with a name input field and a birth year field.
-  the value of the field should be stored in the state variables name and born.
+      {/* TODO: Add form with a name select field and a birth year field.
+  the value of the field should be stored in the state variables born.
   */}
 
       <form onSubmit={handleSubmit}>
         <div>
           name
-          <Select options={authorsOptions} />
+          <Select
+            options={authorsOptions}
+            value={nameOption}
+            onChange={setNameOption} />
         </div>
         <div>
           born
@@ -81,7 +86,7 @@ const Authors = () => {
         </tbody>
       </table>
 
-      <BirthYear />
+      <BirthYear authors={authors} />
     </div>
   )
 }
