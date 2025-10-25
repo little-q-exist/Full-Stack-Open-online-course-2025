@@ -1,4 +1,5 @@
 const { ApolloServer } = require('@apollo/server')
+const { v4: uuidv4 } = require('uuid')
 const { startStandaloneServer } = require('@apollo/server/standalone')
 
 let authors = [
@@ -166,10 +167,11 @@ const resolvers = {
             if (!authorExists) {
                 const newAuthor = {
                     name: args.author,
+                    id: uuidv4(),
                 }
                 authors = authors.concat(newAuthor)
             }
-            const newBook = { ...args }
+            const newBook = { ...args, id: uuidv4() }
             books = books.concat(newBook)
             return newBook
         },
@@ -177,7 +179,7 @@ const resolvers = {
             const author = authors.find(a => a.name === args.name)
             if (!author) {
                 return null
-            }
+        }
             const updatedAuthor = { ...author, born: args.setBornTo }
             authors = authors.map(a => a.name === args.name ? updatedAuthor : a)
             return updatedAuthor
