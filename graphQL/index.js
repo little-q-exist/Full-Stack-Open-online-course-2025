@@ -1,7 +1,6 @@
 const { ApolloServer } = require('@apollo/server')
 const jwt = require('jsonwebtoken')
 const { startStandaloneServer } = require('@apollo/server/standalone')
-const { v1: uuid } = require('uuid')
 const { GraphQLError } = require('graphql')
 const mongoose = require('mongoose')
 const Person = require('./models/person')
@@ -173,18 +172,18 @@ const resolvers = {
         },
         createUser: async (root, args) => {
             // Implementation for creating a user
-            const user = new User({ username: args.username })
-
-            return user.save()
-                .catch((error) => {
-                    throw new GraphQLError('Creating the user failed', {
-                        extensions: {
-                            code: 'BAD_USER_INPUT',
-                            invalidArgs: args.username,
-                            error,
-                        },
-                    })
+            try {
+                const user = new User({ username: args.username })
+                return await user.save()
+            } catch (error) {
+                throw new GraphQLError('Creating the user failed', {
+                    extensions: {
+                        code: 'BAD_USER_INPUT',
+                        invalidArgs: args.username,
+                        error,
+                    },
                 })
+            }
         },
         login: async (root, args) => {
             const user = await User.findOne({ username: args.username })
@@ -235,7 +234,7 @@ const server = new ApolloServer({
 
 startStandaloneServer(server, {
     listen: { port: 4000 },
-    context: async ({ req, res }) => {
+    context: async ({ req }) => {
         const auth = req ? req.headers.authorization : null
         if (auth && auth.toLowerCase().startsWith('bearer ')) {
             const decodedToken = jwt.verify(

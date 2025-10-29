@@ -1,7 +1,25 @@
+const mongoose = require('mongoose')
 const { ApolloServer } = require('@apollo/server')
 const { v4: uuidv4 } = require('uuid')
 const { startStandaloneServer } = require('@apollo/server/standalone')
+const Book = require('./models/Book')
+const Author = require('./models/Author')
 
+require('dotenv').config()
+
+const MONGODB_URI = process.env.MONGODB_URI
+
+mongoose.set('strictQuery', false)
+
+mongoose.connect(MONGODB_URI)
+    .then(() => {
+        console.log('connected to MongoDB')
+    })
+    .catch((error) => {
+        console.log('error connection to MongoDB:', error.message)
+    })
+
+/*
 let authors = [
     {
         name: 'Robert Martin',
@@ -41,7 +59,7 @@ let authors = [
  * Podría tener más sentido asociar un libro con su autor almacenando la id del autor en el contexto del libro en lugar del nombre del autor
  * Sin embargo, por simplicidad, almacenaremos el nombre del autor en conexión con el libro
 */
-
+/*
 let books = [
     {
         title: 'Clean Code',
@@ -102,7 +120,7 @@ const typeDefs = `
     type Book {
         title: String!
         published: Int!
-        author: String!
+        author: Author!
         id: String!
         genres: [String!]!
     }
@@ -138,48 +156,54 @@ const typeDefs = `
 const resolvers = {
     Author: {
         bookCount: (root) => {
-            return books.filter(book => book.author === root.name).length
+            return Book.find({ author: root.name }).countDocuments()
         }
     },
 
     Query: {
-        bookCount: () => books.length,
-        authorCount: () => authors.length,
-        allBooks: (root, args) => {
-            const byAuthor = (book) => book.author === args.author
+        bookCount: () => Book.collection.countDocuments(),
+        authorCount: () => Author.collection.countDocuments(),
+        allBooks: async (_root, args) => {
+            // 使用 MongoDB/Mongoose 在数据库层面进行筛选，避免内存中过滤
+            const filter = {}
 
-            // byGenre: 如果参数数组中的一个字符串匹配某本书数组中的某个字符串，就选出来
-            const byGenre = (book) => args.genre.some(genre => book.genres.includes(genre))
+
+            /* 如果未来需要按作者精确匹配：
             if (args.author) {
-                books = books.filter(byAuthor)
+                filter.author = { name: args.author }
             }
-            if (args.genre) {
-                books = books.filter(byGenre)
+                */
+
+            // genres: 传入的是一个字符串数组，需求为“任意一个匹配即可” => 使用 $in
+            if (Array.isArray(args.genre) && args.genre.length > 0) {
+                filter.genres = { $in: args.genre }
             }
-            return books
+
+            return Book.find(filter)
         },
-        allAuthors: () => authors
+        allAuthors: () => Author.find({}),
     },
 
     Mutation: {
-        addBook: (root, args) => {
-            const authorExists = authors.find(a => a.name === args.author)
+        addBook: async (root, args) => {
+            const authorExists = await Author.find({ name: args.author.name }).countDocuments() > 0
             if (!authorExists) {
                 const newAuthor = {
-                    name: args.author,
+                    name: args.author.name,
                     id: uuidv4(),
                 }
-                authors = authors.concat(newAuthor)
+                const author = new Author(newAuthor)
+                await author.save()
             }
             const newBook = { ...args, id: uuidv4() }
-            books = books.concat(newBook)
-            return newBook
+            const book = new Book(newBook)
+            return await book.save()
         },
         editAuthor: (root, args) => {
             const author = authors.find(a => a.name === args.name)
             if (!author) {
                 return null
-        }
+            }
             const updatedAuthor = { ...author, born: args.setBornTo }
             authors = authors.map(a => a.name === args.name ? updatedAuthor : a)
             return updatedAuthor
