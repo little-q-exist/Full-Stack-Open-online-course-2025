@@ -8,7 +8,15 @@ const BirthYear = ({ authors }) => {
   const [nameOption, setNameOption] = useState(null)
   const [born, setBorn] = useState('')
 
-  const [updateAuthor] = useMutation(EDIT_AUTHOR)
+  const [updateAuthor] = useMutation(EDIT_AUTHOR, {
+    update: (cache, response) => {
+      cache.updateQuery({ query: ALL_AUTHORS }, ({ allAuthors }) => {
+        return {
+          allAuthors: allAuthors.map((a) => a.name === response.data.editAuthor.name ? response.data.editAuthor : a)
+        }
+      })
+    },
+  })
 
   const handleSubmit = (event) => {
     event.preventDefault()
@@ -18,8 +26,7 @@ const BirthYear = ({ authors }) => {
     }
 
     updateAuthor({
-      variables: { name: nameOption.value, setBornTo: Number(born) },
-      refetchQueries: [{ query: ALL_AUTHORS }]
+      variables: { name: nameOption.value, setBornTo: Number(born) }
     })
 
     setNameOption('')

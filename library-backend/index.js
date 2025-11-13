@@ -82,7 +82,8 @@ const typeDefs = `
 const resolvers = {
     Author: {
         bookCount: async (root) => {
-            return await Book.find({ author: root.name }).countDocuments()
+            // DEBUG:_id
+            return await Book.find({ author: root._id }).countDocuments()
         }
     },
 
@@ -107,42 +108,33 @@ const resolvers = {
 
             return Book.find(filter).populate('author')
         },
-        allAuthors: () => Author.find({}),
+        allAuthors: async () => {
+            return await Author.find({})
+        },
         me: (root, args, context) => {
             return context.currentUser
         }
     },
 
     Mutation: {
-        addBook: async (root, args) => {
+        addBook: async (root, args, context) => {
             if (!context.currentUser) {
                 throw new GraphQLError('not authenticated')
             }
 
-            const existedAuthor = await Author.findOne({ name: args.author })
-            if (!existedAuthor) {
-                const newAuthor = {
-                    name: authorName,
-                }
-                const author = await new Author(newAuthor).save()
-                const newBook = { ...args, author: author._id }
+            let author = await Author.findOne({ name: args.author })
 
-                try {
-                    return await new Book(newBook).save()
-                } catch (error) {
-                    throw new GraphQLError('Book title must be unique and at least 5 characters long.', {
-                        extensions: {
-                            code: 'BAD_USER_INPUT',
-                            invalidArgs: args.title,
-                            error,
-                        },
-                    })
+            if (!author) {
+                const newAuthor = {
+                    name: args.author,
                 }
+                author = await new Author(newAuthor).save()
             }
-            const newBook = { ...args, author: existedAuthor._id }
+            const newBook = { ...args, author: author._id }
 
             try {
-                return await new Book(newBook).save()
+                const book = await new Book(newBook).save()
+                return Book.findOne({ _id: book._id }).populate('author')
             } catch (error) {
                 throw new GraphQLError('Book title must be unique and at least 5 characters long.', {
                     extensions: {
@@ -153,7 +145,7 @@ const resolvers = {
                 })
             }
         },
-        editAuthor: async (root, args) => {
+        editAuthor: async (root, args, context) => {
             if (!context.currentUser) {
                 throw new GraphQLError('not authenticated')
             }

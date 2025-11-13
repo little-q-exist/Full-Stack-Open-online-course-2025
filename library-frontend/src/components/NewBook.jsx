@@ -15,7 +15,6 @@ const NewBook = () => {
   const submit = async (event) => {
     event.preventDefault()
 
-    console.log('add book...')
     addBook({
       variables: { title, author, published: Number(published), genres },
       refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }]
