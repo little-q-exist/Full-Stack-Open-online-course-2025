@@ -74,3 +74,22 @@ mutation Login($username: String!, $password: String!) {
   }
 }
 `
+
+export const RECOMMENDATION = gql`
+query Recommendation {
+  me {
+    username
+    favoriteGenre
+  }
+  allBooks {
+    author {
+      name
+    }
+    published
+    title
+    genres
+    id
+  }
+}
+
+`
