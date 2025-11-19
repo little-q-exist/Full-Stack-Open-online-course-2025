@@ -4,7 +4,7 @@ import PersonForm from './component/PersonForm'
 import PhoneForm from './component/PhoneForm'
 import LoginForm from './component/LoginForm'
 import { ALL_PERSONS } from './queries'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const Notify = ({ errorMessage }) => {
   if (!errorMessage) {
@@ -21,6 +21,10 @@ const App = () => {
   const [token, setToken] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
   const client = useApolloClient()
+
+  useEffect(() => {
+    setToken(localStorage.getItem('phoneBook-user-token'))
+  }, [])
 
   const notify = (message) => {
     setErrorMessage(message)

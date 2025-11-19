@@ -4,7 +4,8 @@
   "description": "Course repo/仓库: https://github.com/fullstack-hy2020/fullstack-hy2020.github.io",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -17,11 +18,18 @@
   },
   "homepage": "https://github.com/little-q-exist/Full-Stack-Open-online-course-2025#readme",
   "dependencies": {
-    "@apollo/server": "^5.0.0",
-    "dotenv": "^17.2.3",
-    "graphql": "^16.11.0",
-    "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.19.2",
-    "uuid": "^13.0.0"
+    "@apollo/server": "^4.3.2",
+    "@graphql-tools/schema": "^9.0.15",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "graphql": "^16.6.0",
+    "graphql-subscriptions": "^2.0.0",
+    "graphql-ws": "^5.11.3",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^6.9.0",
+    "nodemon": "^2.0.20",
+    "uuid": "^9.0.0",
+    "ws": "^8.12.0"
   }
 }
