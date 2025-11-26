@@ -1,13 +1,14 @@
 {
-  "name": "types-bmical",
+  "name": "typescript",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "calculateBmi": "ts-node bmiCalculator.ts",
-    "calculateExercises": "ts-node exerciseCalculator.ts"
+    "ts-node": "ts-node",
+    "multiply": "ts-node multiplier.ts",
+    "calculate": "ts-node calculator.ts"
   },
-  "author": "",
+  "author": "Q",
   "license": "ISC",
   "description": "",
   "devDependencies": {
