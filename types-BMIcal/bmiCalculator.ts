@@ -1,4 +1,4 @@
-const calculateBmi = (heightInCm: number, weightInKg: number): String => {
+export const calculateBmi = (heightInCm: number, weightInKg: number): String => {
     const BMI = weightInKg / ((heightInCm / 100) * (heightInCm / 100));
     if (BMI < 18.5) {
         return "thin"
@@ -6,9 +6,15 @@ const calculateBmi = (heightInCm: number, weightInKg: number): String => {
         return "normal"
     } else if (BMI >= 24 && BMI < 28) {
         return "overweight"
-    } else if (BMI >= 28) {
+    } else {
         return "mild obesity"
     }
 }
 
-console.log(calculateBmi(180, 74));
+export default 'default'
+
+if (require.main === module) {
+    const height = Number(process.argv[2]);
+    const weight = Number(process.argv[3]);
+    console.log(calculateBmi(height, weight));
+}

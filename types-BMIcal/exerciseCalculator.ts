@@ -42,6 +42,8 @@ const rateCommentor = (rate: number) => {
             return 'not too bad but could be better'
         case 3:
             return 'good'
+        default:
+            return ''
     }
 }
 
