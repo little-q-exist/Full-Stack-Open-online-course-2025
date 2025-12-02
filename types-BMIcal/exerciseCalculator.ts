@@ -10,14 +10,14 @@ interface ExerciseResult {
 
 const arrayAverage = (array: number[]) => {
     return array.reduce((pre, cur) => pre += cur, 0) / array.length;
-}
+};
 
 const arrayNotZero = (array: number[]) => {
     return array.reduce((accum, cur) => {
         if (cur > 0) accum += 1;
         return accum;
-    }, 0)
-}
+    }, 0);
+};
 
 const rateResult = (acutal: number, expected: number) => {
     const ratePercent = acutal / expected;
@@ -30,24 +30,24 @@ const rateResult = (acutal: number, expected: number) => {
     } else {
         return 3;
     }
-}
+};
 
 const rateCommentor = (rate: number) => {
     switch (rate) {
         case 0:
-            return 'Bad'
+            return 'Bad';
         case 1:
-            return 'Medium'
+            return 'Medium';
         case 2:
-            return 'not too bad but could be better'
+            return 'not too bad but could be better';
         case 3:
-            return 'good'
+            return 'good';
         default:
-            return ''
+            return '';
     }
-}
+};
 
-const calculateExercises = (dailyExerciseHours: number[], targetAmount: number): ExerciseResult => {
+export const calculateExercises = (dailyExerciseHours: number[], targetAmount: number): ExerciseResult => {
     const trainingDays = arrayNotZero(dailyExerciseHours);
     const averageHours = arrayAverage(dailyExerciseHours);
     const success = averageHours >= targetAmount;
@@ -62,7 +62,5 @@ const calculateExercises = (dailyExerciseHours: number[], targetAmount: number):
         ratingDescription,
         target: targetAmount,
         average: averageHours
-    }
-}
-
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
+    };
+};
