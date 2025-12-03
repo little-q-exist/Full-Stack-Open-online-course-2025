@@ -1,6 +1,6 @@
 import express from 'express';
 import { calculateBmi } from './bmiCalculator';
-import { calculateExercises } from './exerciseCalculator'
+import { calculateExercises } from './exerciseCalculator';
 const app = express();
 
 app.use(express.json());
@@ -30,7 +30,7 @@ const toNumberArray = (array: unknown): number[] | null => {
 app.post('/exercises', (req, res) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const { daily_exercises, target } = req.body;
-    
+
     if (!daily_exercises || !target) {
         return res.status(400).send({ error: 'parameters missing' });
     }
